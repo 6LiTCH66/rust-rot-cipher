@@ -22,14 +22,40 @@ fn encrypt_message(message: &[u8], shift: u8) -> String{
             _ => *byte, // for others chars
         }
 
-
     }).collect::<Vec<_>>();
     String::from_utf8_lossy(&encrypt_array_of_bytes).to_string()
+}
+
+fn decrypt_message(message: &[u8], shift: u8) -> String{
+    let decrypted_array_of_bytes = message.iter().map(|byte|{
+        match byte {
+            97..=122 => { // for lowercase's letters
+                if byte - shift < 97 {
+                    (byte - shift) + 26
+                }else {
+                    byte - shift
+                }
+            },
+            65..=90 => { // for uppercase's letter
+                if byte - shift < 65 {
+                    (byte - shift) + 26
+                }else{
+                    byte - shift
+                }
+            },
+            _ => *byte // from other chars
+        }
+    }).collect::<Vec<_>>();
+    println!("{:?}", &decrypted_array_of_bytes);
+
+    String::from_utf8_lossy(&decrypted_array_of_bytes).to_string()
 }
 
 
 
 fn main() {
+    let test = "d";
+    println!("{:?}", test.as_bytes());
     let mut choise = String::new();
 
     loop {
@@ -42,8 +68,8 @@ fn main() {
             Ok(number) => {
                 choise.clear();
                 match number {
-                    1 => encrypt(),
-                    2 => println!("Decrypt"),
+                    1 => encrypting_decrypting(number, "encrypt".to_string()),
+                    2 => encrypting_decrypting(number, "decrypt".to_string()),
                     3 => break,
                     _ => println!("Please try again"),
                 }
@@ -52,13 +78,12 @@ fn main() {
         }
     }
 
-
 }
 
-fn encrypt(){
+fn encrypting_decrypting(choice: i32, option: String){
     let mut message = String::new();
     let mut shift = String::new();
-    println!("Please enter a message you'd like to encrypt:");
+    println!("Please enter a message you'd like to {}:", option);
     stdin().read_line(&mut message).expect("Cannot read proper line!");
     println!("Please choose encrypting method from 1 to 25:");
     stdin().read_line(& mut shift).expect("Cannot read proper line!");
@@ -67,9 +92,19 @@ fn encrypt(){
         Ok(shift_num) => {
             match shift_num {
                 1..=25 => {
-                    let message_to_bytes = message.trim().as_bytes();
-                    let encrypted_message = encrypt_message(message_to_bytes, shift_num);
-                    println!("{}", encrypted_message);
+                    match choice {
+                        1 => {
+                            let message_to_bytes = message.trim().as_bytes();
+                            let encrypted_message = encrypt_message(message_to_bytes, shift_num);
+                            println!("{}", encrypted_message);
+                        },
+                        2 => {
+                            let message_to_bytes = message.trim().as_bytes();
+                            let decrypted_message = decrypt_message(message_to_bytes, shift_num);
+                            println!("{}", decrypted_message);
+                        },
+                        _ => println!("No such option!")
+                    }
 
                 },
                 _ => println!("Try again!"),
