@@ -10,7 +10,7 @@ pub enum CipherMethod{
     None,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Cipher{
     message: String,
     shift: u8
@@ -131,4 +131,95 @@ impl Cipher{
         }
 
     }
+}
+
+#[cfg(test)]
+mod tests{
+    use crate::{CipherMethod, Cipher};
+
+    #[test]
+    fn creating_empty_entity_test(){
+        let cipher = Cipher::new();
+        assert_eq!(
+            Cipher{
+                message: String::new(),
+                shift: 0,
+            },
+            cipher)
+    }
+
+    #[test]
+    fn encrypt_with_only_letters_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "helloworld".to_string();
+        cipher.shift = 15;
+        cipher.encrypt_message();
+        assert_eq!("wtaadldgas".to_string(), cipher.message)
+
+    }
+
+    #[test]
+    fn encrypt_with_letters_and_space_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "hello world how is your day".to_string();
+        cipher.shift = 23;
+        cipher.encrypt_message();
+        assert_eq!("ebiil tloia elt fp vlro axv".to_string(), cipher.message)
+    }
+
+    #[test]
+    fn encrypt_with_letters_numbers_and_space_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "h3l1o w0rld1123".to_string();
+        cipher.shift = 12;
+        cipher.encrypt_message();
+        assert_eq!("t3x1a i0dxp1123".to_string(), cipher.message)
+    }
+
+    #[test]
+    fn encrypt_with_letters_numbers_space_and_chars_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "JJfjdsfjs JHJFfsd878&^*@($Of;df;[],.;[^hjfshdJKJFDS7373hjd^@)$#@#$2163$$32".to_string();
+        cipher.shift = 25;
+        cipher.encrypt_message();
+        assert_eq!("IIeicreir IGIEerc878&^*@($Ne;ce;[],.;[^giergcIJIECR7373gic^@)$#@#$2163$$32".to_string(), cipher.message)
+    }
+
+    #[test]
+    fn decrypt_with_only_letters_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "dahhksknhz".to_string();
+        cipher.shift = 22;
+        cipher.decrypt_message();
+        assert_eq!("helloworld".to_string(), cipher.message)
+
+    }
+
+    #[test]
+    fn decrypt_with_letters_and_space_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "zwddg zgo ak qgmj vsq ygafy".to_string();
+        cipher.shift = 18;
+        cipher.decrypt_message();
+        assert_eq!("hello how is your day going".to_string(), cipher.message)
+    }
+
+    #[test]
+    fn decrypt_with_letters_numbers_and_space_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "q3uu011q0f rb12h0da mj29p01wp".to_string();
+        cipher.shift = 9;
+        cipher.decrypt_message();
+        assert_eq!("h3ll011h0w is12y0ur da29g01ng".to_string(), cipher.message)
+    }
+
+    #[test]
+    fn decrypt_with_letters_numbers_space_and_chars_test(){
+        let mut cipher = Cipher::new();
+        cipher.message = "w3AA0!<>w0L Xh&@(N d12#@g_sp n@U}{shp?V)1c6^".to_string();
+        cipher.shift = 15;
+        cipher.decrypt_message();
+        assert_eq!("h3LL0!<>h0W Is&@(Y o12#@r_da y@F}{dsa?G)1n6^".to_string(), cipher.message)
+    }
+
 }
