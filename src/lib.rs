@@ -12,8 +12,8 @@ pub enum CipherMethod{
 
 #[derive(Debug)]
 pub struct Cipher{
-    pub message: String,
-    pub shift: u8
+    message: String,
+    shift: u8
 
 }
 
